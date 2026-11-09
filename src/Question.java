@@ -6,7 +6,7 @@ public class Question {
     private String optD;
     private String correctOption;
 
-    // Constructor
+    // Correct 6-parameter constructor
     public Question(String questionText, String optA, String optB, String optC, String optD, String correctOption) {
         this.questionText = questionText;
         this.optA = optA;
@@ -17,27 +17,10 @@ public class Question {
     }
 
     // Getters
-    public String getQuestionText() {
-        return questionText;
-    }
-
-    public String getOptA() {
-        return optA;
-    }
-
-    public String getOptB() {
-        return optB;
-    }
-
-    public String getOptC() {
-        return optC;
-    }
-
-    public String getOptD() {
-        return optD;
-    }
-
-    public String getCorrectOption() {
-        return correctOption;
-    }
+    public String getQuestionText() { return questionText; }
+    public String getOptA() { return optA; }
+    public String getOptB() { return optB; }
+    public String getOptC() { return optC; }
+    public String getOptD() { return optD; }
+    public String getCorrectOption() { return correctOption; }
 }

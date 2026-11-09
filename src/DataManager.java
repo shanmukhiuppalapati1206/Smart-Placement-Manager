@@ -1,104 +1,97 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class DataManager {
-
-    // --- READ METHODS ---
-    public static List<Student> loadStudents() {
-        List<Student> studentList = new ArrayList<>();
-        File file = new File("students.csv");
-        if (!file.exists()) return studentList;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            br.readLine(); 
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                String[] data = line.split(",");
-                studentList.add(new Student(data[0], data[1], Double.parseDouble(data[2]), data[3]));
-            }
-        } catch (Exception e) { System.out.println(e.getMessage()); }
-        return studentList;
-    }
-
-    public static List<Company> loadCompanies() {
-        List<Company> companyList = new ArrayList<>();
-        File file = new File("companies.csv");
-        if (!file.exists()) return companyList;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            br.readLine(); 
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                String[] data = line.split(",");
-                companyList.add(new Company(data[0], Double.parseDouble(data[1]), data[2]));
-            }
-        } catch (Exception e) { System.out.println(e.getMessage()); }
-        return companyList;
-    }
-
-    public static List<Question> loadQuestions() {
-        List<Question> questionList = new ArrayList<>();
-        File file = new File("questions.csv");
-        if (!file.exists()) return questionList;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            br.readLine(); 
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                String[] data = line.split(",");
-                questionList.add(new Question(data[0], data[1], data[2], data[3], data[4], data[5], data[6]));
-            }
-        } catch (Exception e) { System.out.println(e.getMessage()); }
-        return questionList;
-    }
-
-    // --- WRITE & DELETE METHODS ---
     
-    public static void saveStudent(Student s) {
-        try (FileWriter fw = new FileWriter("students.csv", true);
-             PrintWriter pw = new PrintWriter(fw)) {
-            pw.println(s.getId() + "," + s.getName() + "," + s.getCgpa() + "," + s.getSkills());
-        } catch (Exception e) { System.out.println(e.getMessage()); }
+    // --- STUDENTS CRUD ---
+    public static List<Student> loadStudents() {
+        List<Student> students = new ArrayList<>();
+        File file = new File("students.csv");
+        if (!file.exists()) return students;
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 4) {
+                    students.add(new Student(parts[0].trim(), parts[1].trim(), Double.parseDouble(parts[2].trim()), parts[3].trim()));
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return students;
     }
 
-    public static void deleteStudent(String studentId) {
+    public static void saveStudent(Student s) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("students.csv", true))) {
+            bw.write(s.getId() + "," + s.getName() + "," + s.getCgpa() + "," + s.getSkills());
+            bw.newLine();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public static void deleteStudent(String id) {
         List<Student> students = loadStudents();
-        students.removeIf(s -> s.getId().equals(studentId));
-        
-        // Overwrite file
-        try (PrintWriter pw = new PrintWriter(new FileWriter("students.csv", false))) {
-            pw.println("ID,Name,CGPA,Skills");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("students.csv"))) {
             for (Student s : students) {
-                pw.println(s.getId() + "," + s.getName() + "," + s.getCgpa() + "," + s.getSkills());
+                if (!s.getId().equals(id)) {
+                    bw.write(s.getId() + "," + s.getName() + "," + s.getCgpa() + "," + s.getSkills());
+                    bw.newLine();
+                }
             }
-        } catch (Exception e) { System.out.println(e.getMessage()); }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // --- COMPANIES CRUD ---
+    public static List<Company> loadCompanies() {
+        List<Company> companies = new ArrayList<>();
+        File file = new File("companies.csv");
+        if (!file.exists()) return companies;
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 3) {
+                    companies.add(new Company(parts[0].trim(), Double.parseDouble(parts[1].trim()), parts[2].trim()));
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return companies;
     }
 
     public static void saveCompany(Company c) {
-        try (FileWriter fw = new FileWriter("companies.csv", true);
-             PrintWriter pw = new PrintWriter(fw)) {
-            pw.println(c.getCompanyName() + "," + c.getMinCgpa() + "," + c.getRequiredSkill());
-        } catch (Exception e) { System.out.println(e.getMessage()); }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("companies.csv", true))) {
+            bw.write(c.getCompanyName() + "," + c.getMinCgpa() + "," + c.getRequiredSkill());
+            bw.newLine();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public static void deleteCompany(String companyName) {
+    public static void deleteCompany(String name) {
         List<Company> companies = loadCompanies();
-        companies.removeIf(c -> c.getCompanyName().equalsIgnoreCase(companyName));
-        
-        // Overwrite file
-        try (PrintWriter pw = new PrintWriter(new FileWriter("companies.csv", false))) {
-            pw.println("CompanyName,MinCGPA,RequiredSkill");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("companies.csv"))) {
             for (Company c : companies) {
-                pw.println(c.getCompanyName() + "," + c.getMinCgpa() + "," + c.getRequiredSkill());
+                if (!c.getCompanyName().equalsIgnoreCase(name)) {
+                    bw.write(c.getCompanyName() + "," + c.getMinCgpa() + "," + c.getRequiredSkill());
+                    bw.newLine();
+                }
             }
-        } catch (Exception e) { System.out.println(e.getMessage()); }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // --- QUESTIONS LOADER ---
+    public static List<Question> loadQuestions() {
+        List<Question> questions = new ArrayList<>();
+        File file = new File("questions.csv");
+        if (!file.exists()) return questions;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 6) {
+                    questions.add(new Question(parts[0].trim(), parts[1].trim(), parts[2].trim(), parts[3].trim(), parts[4].trim(), parts[5].trim()));
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return questions;
     }
 }
