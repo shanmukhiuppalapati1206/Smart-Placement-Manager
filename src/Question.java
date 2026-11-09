@@ -1,11 +1,13 @@
 public class Question {
-    private String type; // "Aptitude" or "Technical"
     private String questionText;
-    private String optA, optB, optC, optD;
+    private String optA;
+    private String optB;
+    private String optC;
+    private String optD;
     private String correctOption;
 
-    public Question(String type, String questionText, String optA, String optB, String optC, String optD, String correctOption) {
-        this.type = type;
+    // Constructor
+    public Question(String questionText, String optA, String optB, String optC, String optD, String correctOption) {
         this.questionText = questionText;
         this.optA = optA;
         this.optB = optB;
@@ -15,11 +17,27 @@ public class Question {
     }
 
     // Getters
-    public String getType() { return type; }
-    public String getQuestionText() { return questionText; }
-    public String getOptA() { return optA; }
-    public String getOptB() { return optB; }
-    public String getOptC() { return optC; }
-    public String getOptD() { return optD; }
-    public String getCorrectOption() { return correctOption; }
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    public String getOptA() {
+        return optA;
+    }
+
+    public String getOptB() {
+        return optB;
+    }
+
+    public String getOptC() {
+        return optC;
+    }
+
+    public String getOptD() {
+        return optD;
+    }
+
+    public String getCorrectOption() {
+        return correctOption;
+    }
 }
