@@ -1,3 +1,4 @@
 Type,Question,A,B,C,D,CorrectAnswer
-Aptitude,What is 2+2?,1,3,4,5,C
-Technical,Which is not a Java keyword?,class,interface,extends,main,D
+Aptitude,What is the next number in the series: 2 4 8 16 ?,20,24,32,64,C
+Technical,Which of the following is NOT a Java keyword?,class,interface,extends,main,D
+Technical,What is the size of an int in Java?,16-bit,32-bit,64-bit,8-bit,B
