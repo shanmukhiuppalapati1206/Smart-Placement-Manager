@@ -12,19 +12,17 @@ public class MainApp extends Application {
     private Stage window;
     private Scene loginScene;
 
-    // Professional Theme Styles
-    String sidebarStyle = "-fx-background-color: #1E293B; -fx-padding: 20;";
-    String headerStyle = "-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E293B;";
+    String sidebarStyle = "-fx-background-color: #0F172A; -fx-padding: 20;";
+    String headerStyle = "-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1E293B;";
     String btnStyle = "-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;";
-    String sidebarBtnStyle = "-fx-background-color: transparent; -fx-text-fill: #94A3B8; -fx-font-size: 15px; -fx-alignment: center-left; -fx-padding: 10 0; -fx-cursor: hand;";
-    String cardStyle = "-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);";
+    String sidebarBtnStyle = "-fx-background-color: transparent; -fx-text-fill: #94A3B8; -fx-font-size: 14px; -fx-alignment: center-left; -fx-padding: 10 0; -fx-cursor: hand;";
+    String cardStyle = "-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);";
 
     @Override
     public void start(Stage primaryStage) {
         window = primaryStage;
         window.setTitle("Smart College Placement & Recruitment Manager");
 
-        // --- HOME / LOGIN SCREEN ---
         VBox loginBox = new VBox(20);
         loginBox.setAlignment(Pos.CENTER);
         loginBox.setStyle(cardStyle);
@@ -32,10 +30,10 @@ public class MainApp extends Application {
 
         Label titleLabel = new Label("Placement & Recruitment");
         titleLabel.setStyle(headerStyle);
-        Label subtitle = new Label("Smart College Portal");
-        subtitle.setStyle("-fx-text-fill: #64748B; -fx-font-size: 14px; -fx-padding: 0 0 10 0;");
+        Label subtitle = new Label("Enterprise Campus Portal");
+        subtitle.setStyle("-fx-text-fill: #64748B; -fx-font-size: 14px;");
 
-        Button studentLoginBtn = new Button("Student Portal");
+        Button studentLoginBtn = new Button("Student Secure Portal");
         Button coordinatorLoginBtn = new Button("Placement Coordinator");
         Button registerMenuBtn = new Button("Register New Profile");
         
@@ -46,9 +44,7 @@ public class MainApp extends Application {
 
         studentLoginBtn.setOnAction(e -> {
             Scene studentScene = createStudentDashboard();
-            if (studentScene != null) {
-                window.setScene(studentScene);
-            }
+            if (studentScene != null) window.setScene(studentScene);
         });
         coordinatorLoginBtn.setOnAction(e -> window.setScene(createCoordinatorDashboard()));
         registerMenuBtn.setOnAction(e -> window.setScene(createRegistrationScreen()));
@@ -63,26 +59,21 @@ public class MainApp extends Application {
         window.show();
     }
 
-    // ==========================================
-    // --- COORDINATOR DASHBOARD ---
-    // ==========================================
     private Scene createCoordinatorDashboard() {
         BorderPane layout = new BorderPane();
-        
         VBox sidebar = new VBox(15);
         sidebar.setStyle(sidebarStyle);
         sidebar.setPrefWidth(240);
         Label logo = new Label("Coordinator Hub");
         logo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 25 0;");
         
-        Button dashBtn = new Button("Eligibility Reports");
-        Button manageStudBtn = new Button("Manage Students");
-        Button manageCompBtn = new Button("Manage Companies");
-        Button logoutBtn = new Button("Sign Out");
+        Button dashBtn = new Button("📊 Eligibility Reports");
+        Button manageStudBtn = new Button("👥 Manage Students");
+        Button manageCompBtn = new Button("🏢 Manage Companies");
+        Button logoutBtn = new Button("🚪 Sign Out");
         
         dashBtn.setStyle(sidebarBtnStyle); manageStudBtn.setStyle(sidebarBtnStyle); 
         manageCompBtn.setStyle(sidebarBtnStyle); logoutBtn.setStyle(sidebarBtnStyle);
-        
         sidebar.getChildren().addAll(logo, dashBtn, manageStudBtn, manageCompBtn, logoutBtn);
 
         VBox reportsPanel = getReportsPanel();
@@ -101,7 +92,8 @@ public class MainApp extends Application {
 
     private VBox getReportsPanel() {
         VBox content = new VBox(20);
-        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 40;");
+        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
+        content.setAlignment(Pos.CENTER);
         Label title = new Label("Company Eligibility & Recruitment Reports");
         title.setStyle(headerStyle);
         
@@ -109,17 +101,17 @@ public class MainApp extends Application {
         viewReportsBtn.setStyle(btnStyle);
         
         Label reportOutput = new Label("Click button to load eligibility data...");
-        reportOutput.setStyle(cardStyle + "-fx-font-family: 'Consolas'; -fx-font-size: 13px;");
-        reportOutput.setMinSize(600, 320);
+        reportOutput.setStyle(cardStyle + "-fx-font-family: 'Consolas'; -fx-font-size: 12px;");
+        reportOutput.setMinSize(650, 340);
 
         viewReportsBtn.setOnAction(e -> {
             try {
                 List<Student> students = DataManager.loadStudents();
                 List<Company> companies = DataManager.loadCompanies();
                 StringBuilder sb = new StringBuilder();
-                sb.append("========================================\n");
-                sb.append("   PLACEMENT ELIGIBILITY STATUS REPORT\n");
-                sb.append("========================================\n\n");
+                sb.append("==================================================\n");
+                sb.append("         PLACEMENT ELIGIBILITY STATUS REPORT      \n");
+                sb.append("==================================================\n\n");
                 for (Company c : companies) {
                     sb.append("🏢 Company: ").append(c.getCompanyName())
                       .append(" [Min CGPA: ").append(c.getMinCgpa()).append(" | Req: ").append(c.getRequiredSkill()).append("]\n");
@@ -143,6 +135,7 @@ public class MainApp extends Application {
     private VBox getManageStudentsPanel() {
         VBox content = new VBox(20);
         content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 40;");
+        content.setAlignment(Pos.CENTER);
         Label title = new Label("Manage Student Records");
         title.setStyle(headerStyle);
 
@@ -151,7 +144,7 @@ public class MainApp extends Application {
         card.setMaxWidth(400);
 
         Label lbl = new Label("Remove Student Profile");
-        lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+        lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         TextField deleteIdField = new TextField(); deleteIdField.setPromptText("Enter Student ID (e.g., 101)");
         Button deleteBtn = new Button("Delete Student");
         deleteBtn.setStyle("-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;");
@@ -171,7 +164,8 @@ public class MainApp extends Application {
 
     private VBox getManageCompaniesPanel() {
         VBox content = new VBox(20);
-        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 40;");
+        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
+        content.setAlignment(Pos.CENTER);
         Label title = new Label("Manage Company Criteria");
         title.setStyle(headerStyle);
 
@@ -180,7 +174,7 @@ public class MainApp extends Application {
         card.setMaxWidth(420);
 
         Label addLbl = new Label("Add Recruiting Company");
-        addLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+        addLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         TextField compName = new TextField(); compName.setPromptText("Company Name");
         TextField minCgpa = new TextField(); minCgpa.setPromptText("Minimum CGPA");
         TextField reqSkill = new TextField(); reqSkill.setPromptText("Required Skill (e.g., Java)");
@@ -190,7 +184,7 @@ public class MainApp extends Application {
         Separator sep = new Separator();
 
         Label delLbl = new Label("Remove Company");
-        delLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+        delLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         TextField delCompField = new TextField(); delCompField.setPromptText("Company Name to Remove");
         Button delBtn = new Button("Delete Company");
         delBtn.setStyle("-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;");
@@ -218,144 +212,98 @@ public class MainApp extends Application {
         return content;
     }
 
-    // ==========================================
-    // --- STUDENT DASHBOARD WITH ID LOGIN ---
-    // ==========================================
     private Scene createStudentDashboard() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Student Portal Login");
-        dialog.setHeaderText("Enter Your Student ID to Login");
-        dialog.setContentText("Student ID (e.g., 101):");
+        Dialog<javafx.util.Pair<String, String>> loginDialog = new Dialog<>();
+        loginDialog.setTitle("Secure Student Portal Login");
+        loginDialog.setHeaderText("Enter Your Student ID and Secure Password");
 
-        java.util.Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent() || result.get().trim().isEmpty()) {
-            return null; 
-        }
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        loginDialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-        String inputId = result.get().trim();
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+
+        TextField idField = new TextField(); idField.setPromptText("Student ID (e.g., 101)");
+        PasswordField passwordField = new PasswordField(); passwordField.setPromptText("Password (default: 1234)");
+
+        grid.add(new Label("Student ID:"), 0, 0); grid.add(idField, 1, 0);
+        grid.add(new Label("Password:"), 0, 1); grid.add(passwordField, 1, 1);
+
+        loginDialog.getDialogPane().setContent(grid);
+        loginDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new javafx.util.Pair<>(idField.getText().trim(), passwordField.getText().trim());
+            }
+            return null;
+        });
+
+        java.util.Optional<javafx.util.Pair<String, String>> result = loginDialog.showAndWait();
+        if (!result.isPresent()) return null;
+
+        String inputId = result.get().getKey();
+        String inputPassword = result.get().getValue();
+
         List<Student> allStudents = DataManager.loadStudents();
         Student loggedInStudent = null;
-
         for (Student s : allStudents) {
-            if (s.getId().equals(inputId)) {
-                loggedInStudent = s;
-                break;
-            }
+            if (s.getId().equals(inputId)) { loggedInStudent = s; break; }
         }
 
-        if (loggedInStudent == null) {
+        if (loggedInStudent == null || !inputPassword.equals("1234")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Login Failed");
-            alert.setHeaderText("Student ID Not Found!");
-            alert.setContentText("Please register your profile first using 'Register New Profile'.");
+            alert.setTitle("Authentication Failed");
+            alert.setHeaderText("Invalid Student ID or Password!");
+            alert.setContentText("Default password for demo accounts is '1234'.");
             alert.showAndWait();
             return null;
         }
 
         BorderPane layout = new BorderPane();
-        
         VBox sidebar = new VBox(15);
         sidebar.setStyle(sidebarStyle);
         sidebar.setPrefWidth(240);
         Label logo = new Label("Portal: " + loggedInStudent.getName());
-        logo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 25 0;");
+        logo.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 20 0;");
         
-        Button testBtn = new Button("Aptitude & Tech Practice");
-        Button logoutBtn = new Button("Sign Out");
-        testBtn.setStyle(sidebarBtnStyle); logoutBtn.setStyle(sidebarBtnStyle);
-        sidebar.getChildren().addAll(logo, testBtn, logoutBtn);
+        Button aptTestBtn = new Button("💡 Aptitude Assessment");
+        Button techTestBtn = new Button("💻 Technical Assessment");
+        Button compPrepBtn = new Button("🏢 Company Prep Hub");
+        Button logoutBtn = new Button("🚪 Sign Out");
+        
+        aptTestBtn.setStyle(sidebarBtnStyle); techTestBtn.setStyle(sidebarBtnStyle); 
+        compPrepBtn.setStyle(sidebarBtnStyle); logoutBtn.setStyle(sidebarBtnStyle);
+        sidebar.getChildren().addAll(logo, aptTestBtn, techTestBtn, compPrepBtn, logoutBtn);
 
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
         topBar.setStyle("-fx-background-color: white; -fx-padding: 15 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0, 0, 2);");
         
-        Button profileBtn = new Button("👤 My Profile & Details");
+        Button profileBtn = new Button("👤 My Profile & Resume Sync");
         profileBtn.setStyle("-fx-background-color: #E2E8F0; -fx-text-fill: #1E293B; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 6; -fx-cursor: hand;");
         topBar.getChildren().add(profileBtn);
 
-        VBox content = new VBox(20);
-        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
-        content.setAlignment(Pos.TOP_CENTER);
-        
-        Label studentTitle = new Label("Live Practice Test & Assessment");
-        studentTitle.setStyle(headerStyle);
-        
-        Label timerLabel = new Label("Time Left: 30:00");
-        timerLabel.setStyle("-fx-text-fill: #DC2626; -fx-font-size: 16px; -fx-font-weight: bold;");
-        
-        Button startTestBtn = new Button("Start Timer & Begin Test");
-        startTestBtn.setStyle(btnStyle);
-        
-        VBox quizCard = new VBox(15);
-        quizCard.setStyle(cardStyle);
-        quizCard.setAlignment(Pos.CENTER_LEFT);
-        quizCard.setMaxWidth(600);
-        
-        Label questionLabel = new Label("Click 'Start Timer & Begin Test' to start practicing questions.");
-        questionLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
-        
-        Button optA = new Button(); Button optB = new Button();
-        Button optC = new Button(); Button optD = new Button();
-        String optStyle = "-fx-background-color: #F1F5F9; -fx-text-fill: #1E293B; -fx-padding: 10; -fx-font-size: 14px; -fx-cursor: hand; -fx-alignment: center-left;";
-        optA.setStyle(optStyle); optB.setStyle(optStyle); optC.setStyle(optStyle); optD.setStyle(optStyle);
-        optA.setMinWidth(500); optB.setMinWidth(500); optC.setMinWidth(500); optD.setMinWidth(500);
-        
-        VBox optionsBox = new VBox(10, optA, optB, optC, optD);
-        optionsBox.setVisible(false); 
-        
-        Label resultLabel = new Label();
-        resultLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #16A34A;");
+        VBox aptitudePanel = getAptitudeTestPanel();
+        VBox technicalPanel = getTechnicalTestPanel();
+        VBox companyPrepPanel = getCompanyPrepPanel();
 
-        quizCard.getChildren().addAll(questionLabel, optionsBox, resultLabel);
-        
-        int[] currentQ = {0}; int[] score = {0};
-        
-        startTestBtn.setOnAction(e -> {
-            List<Question> qList = DataManager.loadQuestions();
-            if (qList.isEmpty()) {
-                questionLabel.setText("No questions found in questions.csv!");
-                return;
-            }
-            startTestBtn.setVisible(false); optionsBox.setVisible(true);
-            
-            startTimerThread(timerLabel);
-            loadQuestionUI(qList, currentQ[0], questionLabel, optA, optB, optC, optD);
-            
-            javafx.event.EventHandler<javafx.event.ActionEvent> answerHandler = event -> {
-                Button clicked = (Button) event.getSource();
-                String selected = clicked.getText().substring(0, 1); 
-                if (selected.equals(qList.get(currentQ[0]).getCorrectOption())) score[0]++;
-                
-                currentQ[0]++;
-                if (currentQ[0] < qList.size()) {
-                    loadQuestionUI(qList, currentQ[0], questionLabel, optA, optB, optC, optD);
-                } else {
-                    optionsBox.setVisible(false);
-                    questionLabel.setText("Test Successfully Completed!");
-                    resultLabel.setText("Final Score: " + score[0] + " / " + qList.size() + " (" + ((score[0]*100)/qList.size()) + "%)");
-                }
-            };
-            optA.setOnAction(answerHandler); optB.setOnAction(answerHandler);
-            optC.setOnAction(answerHandler); optD.setOnAction(answerHandler);
-        });
+        aptTestBtn.setOnAction(e -> layout.setCenter(getCenterWithTopBar(topBar, aptitudePanel)));
+        techTestBtn.setOnAction(e -> layout.setCenter(getCenterWithTopBar(topBar, technicalPanel)));
+        compPrepBtn.setOnAction(e -> layout.setCenter(getCenterWithTopBar(topBar, companyPrepPanel)));
 
-        // PROFILE MODAL FOR LOGGED IN STUDENT
         final Student activeStudent = loggedInStudent;
         profileBtn.setOnAction(e -> {
             Stage profileStage = new Stage();
             profileStage.setTitle("Student Profile: " + activeStudent.getName());
-            
             VBox pRoot = new VBox(15);
-            pRoot.setStyle(cardStyle);
-            pRoot.setAlignment(Pos.CENTER);
-            
+            pRoot.setStyle(cardStyle); pRoot.setAlignment(Pos.CENTER);
             Label pTitle = new Label("Student Academic Profile");
             pTitle.setStyle(headerStyle);
             
-            TextField pId = new TextField(activeStudent.getId()); pId.setPromptText("ID");
-            TextField pName = new TextField(activeStudent.getName()); pName.setPromptText("Name");
-            TextField pCgpa = new TextField(String.valueOf(activeStudent.getCgpa())); pCgpa.setPromptText("CGPA");
-            TextField pSkills = new TextField(activeStudent.getSkills()); pSkills.setPromptText("Skills");
+            TextField pId = new TextField(activeStudent.getId());
+            TextField pName = new TextField(activeStudent.getName());
+            TextField pCgpa = new TextField(String.valueOf(activeStudent.getCgpa()));
+            TextField pSkills = new TextField(activeStudent.getSkills());
             
             Button updateBtn = new Button("Update & Save Details");
             updateBtn.setStyle(btnStyle);
@@ -368,39 +316,183 @@ public class MainApp extends Application {
                     activeStudent.setName(pName.getText());
                     activeStudent.setCgpa(Double.parseDouble(pCgpa.getText()));
                     activeStudent.setSkills(pSkills.getText());
-                    
                     DataManager.deleteStudent(oldId);
                     DataManager.saveStudent(activeStudent);
-                    
                     pStatus.setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
-                    pStatus.setText("Profile updated & saved to CSV!");
+                    pStatus.setText("Profile updated successfully!");
                 } catch(Exception err) {
                     pStatus.setStyle("-fx-text-fill: #DC2626;");
                     pStatus.setText("Invalid entry format.");
                 }
             });
-            
             pRoot.getChildren().addAll(pTitle, new Label("Student ID:"), pId, new Label("Full Name:"), pName, new Label("CGPA:"), pCgpa, new Label("Primary Skills:"), pSkills, updateBtn, pStatus);
-            Scene pScene = new Scene(pRoot, 400, 500);
-            profileStage.setScene(pScene);
+            profileStage.setScene(new Scene(pRoot, 400, 500));
             profileStage.show();
         });
         
         logoutBtn.setOnAction(e -> window.setScene(loginScene));
-        content.getChildren().addAll(studentTitle, timerLabel, startTestBtn, quizCard);
-        
-        BorderPane centerPane = new BorderPane();
-        centerPane.setTop(topBar);
-        centerPane.setCenter(content);
-        
         layout.setLeft(sidebar);
-        layout.setCenter(centerPane);
+        layout.setCenter(getCenterWithTopBar(topBar, aptitudePanel));
         return new Scene(layout, 950, 650);
     }
 
-    // ==========================================
-    // --- REGISTRATION SCREEN ---
-    // ==========================================
+    private BorderPane getCenterWithTopBar(HBox topBar, VBox contentPanel) {
+        BorderPane bp = new BorderPane();
+        bp.setTop(topBar);
+        bp.setCenter(contentPanel);
+        return bp;
+    }
+
+    private VBox getAptitudeTestPanel() {
+        VBox content = new VBox(20);
+        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
+        content.setAlignment(Pos.CENTER);
+        
+        Label title = new Label("Quantitative & Logical Aptitude Round (15 Questions)");
+        title.setStyle(headerStyle);
+        Label timerLabel = new Label("Time Left: 30:00");
+        timerLabel.setStyle("-fx-text-fill: #DC2626; -fx-font-size: 14px; -fx-font-weight: bold;");
+        
+        Button startBtn = new Button("Start Aptitude Test");
+        startBtn.setStyle(btnStyle);
+        
+        VBox quizCard = new VBox(15);
+        quizCard.setStyle(cardStyle);
+        quizCard.setAlignment(Pos.CENTER_LEFT);
+        quizCard.setMaxWidth(650);
+        
+        Label qLbl = new Label("Click 'Start Aptitude Test' to begin.");
+        qLbl.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        
+        Button a = new Button(); Button b = new Button(); Button c = new Button(); Button d = new Button();
+        String optStyle = "-fx-background-color: #F1F5F9; -fx-text-fill: #1E293B; -fx-padding: 10; -fx-font-size: 13px; -fx-cursor: hand; -fx-alignment: center-left;";
+        a.setStyle(optStyle); b.setStyle(optStyle); c.setStyle(optStyle); d.setStyle(optStyle);
+        a.setMinWidth(550); b.setMinWidth(550); c.setMinWidth(550); d.setMinWidth(550);
+        
+        VBox options = new VBox(10, a, b, c, d);
+        options.setVisible(false);
+        Label res = new Label();
+        res.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #16A34A;");
+
+        quizCard.getChildren().addAll(qLbl, options, res);
+        
+        int[] idx = {0}; int[] score = {0};
+        startBtn.setOnAction(e -> {
+            List<Question> qList = DataManager.loadQuestions();
+            if(qList.isEmpty()) { qLbl.setText("No questions available."); return; }
+            startBtn.setVisible(false); options.setVisible(true);
+            startTimerThread(timerLabel);
+            loadQ(qList, idx[0], qLbl, a, b, c, d);
+            
+            javafx.event.EventHandler<javafx.event.ActionEvent> handler = ev -> {
+                Button btn = (Button) ev.getSource();
+                if(btn.getText().substring(0, 1).equals(qList.get(idx[0]).getCorrectOption())) score[0]++;
+                idx[0]++;
+                if(idx[0] < qList.size()) loadQ(qList, idx[0], qLbl, a, b, c, d);
+                else { options.setVisible(false); qLbl.setText("Aptitude Assessment Completed!"); res.setText("Final Score: " + score[0] + "/" + qList.size()); }
+            };
+            a.setOnAction(handler); b.setOnAction(handler); c.setOnAction(handler); d.setOnAction(handler);
+        });
+
+        content.getChildren().addAll(title, timerLabel, startBtn, quizCard);
+        return content;
+    }
+
+    private VBox getTechnicalTestPanel() {
+        VBox content = new VBox(20);
+        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
+        content.setAlignment(Pos.CENTER);
+        
+        Label title = new Label("Core Java & DSA Technical Assessment");
+        title.setStyle(headerStyle);
+        Label sub = new Label("Advanced Programming Concepts Round");
+        sub.setStyle("-fx-text-fill: #64748B; -fx-font-size: 13px;");
+        
+        VBox card = new VBox(15);
+        card.setStyle(cardStyle);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setMaxWidth(650);
+        
+        Label qText = new Label("Q1. Which data structure is ideal for implementing Breadth-First Search (BFS)?");
+        qText.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        
+        RadioButton r1 = new RadioButton("Stack");
+        RadioButton r2 = new RadioButton("Queue");
+        RadioButton r3 = new RadioButton("Priority Queue");
+        ToggleGroup tg = new ToggleGroup();
+        r1.setToggleGroup(tg); r2.setToggleGroup(tg); r3.setToggleGroup(tg);
+        
+        Button submitTech = new Button("Submit Technical Answer");
+        submitTech.setStyle(btnStyle);
+        Label techRes = new Label();
+        
+        submitTech.setOnAction(e -> {
+            if(r2.isSelected()) {
+                techRes.setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
+                techRes.setText("Correct! BFS uses a Queue data structure.");
+            } else {
+                techRes.setStyle("-fx-text-fill: #DC2626; -fx-font-weight: bold;");
+                techRes.setText("Incorrect. Correct answer is Queue.");
+            }
+        });
+
+        card.getChildren().addAll(qText, r1, r2, r3, submitTech, techRes);
+        content.getChildren().addAll(title, sub, card);
+        return content;
+    }
+
+    private VBox getCompanyPrepPanel() {
+        VBox content = new VBox(20);
+        content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
+        content.setAlignment(Pos.CENTER);
+        
+        Label title = new Label("Target Company Preparation Hub");
+        title.setStyle(headerStyle);
+        Label sub = new Label("View hiring criteria, interview guides, and practice materials.");
+        sub.setStyle("-fx-text-fill: #64748B; -fx-font-size: 13px;");
+
+        VBox card = new VBox(15);
+        card.setStyle(cardStyle);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setMaxWidth(650);
+
+        Label info = new Label("🏢 Active Recruiting Partner Guidelines:\n\n" +
+                "• Tech Mahindra: Focus on OOPs, SQL queries, and Verbal Reasoning.\n" +
+                "• TCS Ninja: Coding questions on Strings, Arrays & Quantitative Aptitude.\n" +
+                "• Infosys Power Programmer: Advanced DSA, DP, and System Design rounds.\n\n" +
+                "💡 Tip: Ensure your CGPA and primary skills match company criteria for automated interview scheduling.");
+        info.setWrapText(true);
+        info.setStyle("-fx-font-size: 13px; -fx-line-spacing: 5;");
+
+        card.getChildren().addAll(info);
+        content.getChildren().addAll(title, sub, card);
+        return content;
+    }
+
+    private void loadQ(List<Question> qList, int i, Label qL, Button a, Button b, Button c, Button d) {
+        Question q = qList.get(i);
+        qL.setText("Q" + (i + 1) + ". " + q.getQuestionText());
+        a.setText("A) " + q.getOptA()); b.setText("B) " + q.getOptB());
+        c.setText("C) " + q.getOptC()); d.setText("D) " + q.getOptD());
+    }
+
+    private void startTimerThread(Label timerLabel) {
+        Thread timerThread = new Thread(() -> {
+            try {
+                int secondsLeft = 1800; 
+                while (secondsLeft > 0) {
+                    final int displayTime = secondsLeft;
+                    Platform.runLater(() -> timerLabel.setText(String.format("Time Left: %02d:%02d", displayTime / 60, displayTime % 60)));
+                    Thread.sleep(1000);
+                    secondsLeft--;
+                }
+                Platform.runLater(() -> timerLabel.setText("Time's Up!"));
+            } catch (InterruptedException ignored) {}
+        });
+        timerThread.setDaemon(true);
+        timerThread.start();
+    }
+
     private Scene createRegistrationScreen() {
         VBox regBox = new VBox(15);
         regBox.setAlignment(Pos.CENTER);
@@ -431,7 +523,7 @@ public class MainApp extends Application {
                 Student s = new Student(idField.getText(), nameField.getText(), Double.parseDouble(cgpaField.getText()), skillsCombo.getValue());
                 DataManager.saveStudent(s); 
                 regStatus.setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
-                regStatus.setText("Registration Successful!");
+                regStatus.setText("Registration Successful! Default password: 1234");
                 idField.clear(); nameField.clear(); cgpaField.clear(); skillsCombo.getSelectionModel().clearSelection();
             } catch (Exception ex) {
                 regStatus.setStyle("-fx-text-fill: #DC2626; -fx-font-weight: bold;");
@@ -444,30 +536,6 @@ public class MainApp extends Application {
         StackPane root = new StackPane(regBox);
         root.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 50;");
         return new Scene(root, 950, 650);
-    }
-
-    private void loadQuestionUI(List<Question> qList, int index, Label qLabel, Button a, Button b, Button c, Button d) {
-        Question q = qList.get(index);
-        qLabel.setText("Q" + (index + 1) + ". " + q.getQuestionText());
-        a.setText("A) " + q.getOptA()); b.setText("B) " + q.getOptB());
-        c.setText("C) " + q.getOptC()); d.setText("D) " + q.getOptD());
-    }
-
-    private void startTimerThread(Label timerLabel) {
-        Thread timerThread = new Thread(() -> {
-            try {
-                int secondsLeft = 1800; 
-                while (secondsLeft > 0) {
-                    final int displayTime = secondsLeft;
-                    Platform.runLater(() -> timerLabel.setText(String.format("Time Left: %02d:%02d", displayTime / 60, displayTime % 60)));
-                    Thread.sleep(1000);
-                    secondsLeft--;
-                }
-                Platform.runLater(() -> timerLabel.setText("Time's Up!"));
-            } catch (InterruptedException ignored) {}
-        });
-        timerThread.setDaemon(true);
-        timerThread.start();
     }
 
     public static void main(String[] args) {
