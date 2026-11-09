@@ -1,17 +1,48 @@
-public class Student extends Person {
+public class Student {
+    private String id;
+    private String name;
     private double cgpa;
     private String skills;
-    private int testScore;
 
+    // Constructor
     public Student(String id, String name, double cgpa, String skills) {
-        super(id, name); // Calls the Person constructor
+        this.id = id;
+        this.name = name;
         this.cgpa = cgpa;
         this.skills = skills;
-        this.testScore = 0; // Default score before taking the test
     }
 
-    public double getCgpa() { return cgpa; }
-    public String getSkills() { return skills; }
-    public int getTestScore() { return testScore; }
-    public void setTestScore(int testScore) { this.testScore = testScore; }
+    // Getters
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getCgpa() {
+        return cgpa;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    // Setters (Ivi lekapovadam valla error ochindi)
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCgpa(double cgpa) {
+        this.cgpa = cgpa;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
 }
