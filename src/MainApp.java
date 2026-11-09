@@ -44,7 +44,12 @@ public class MainApp extends Application {
         registerMenuBtn.setStyle("-fx-background-color: #475569; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"); 
         registerMenuBtn.setMinWidth(260);
 
-        studentLoginBtn.setOnAction(e -> window.setScene(createStudentDashboard()));
+        studentLoginBtn.setOnAction(e -> {
+            Scene studentScene = createStudentDashboard();
+            if (studentScene != null) {
+                window.setScene(studentScene);
+            }
+        });
         coordinatorLoginBtn.setOnAction(e -> window.setScene(createCoordinatorDashboard()));
         registerMenuBtn.setOnAction(e -> window.setScene(createRegistrationScreen()));
 
@@ -214,24 +219,52 @@ public class MainApp extends Application {
     }
 
     // ==========================================
-    // --- STUDENT DASHBOARD WITH TOP-RIGHT PROFILE ---
+    // --- STUDENT DASHBOARD WITH ID LOGIN ---
     // ==========================================
     private Scene createStudentDashboard() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Student Portal Login");
+        dialog.setHeaderText("Enter Your Student ID to Login");
+        dialog.setContentText("Student ID (e.g., 101):");
+
+        java.util.Optional<String> result = dialog.showAndWait();
+        if (!result.isPresent() || result.get().trim().isEmpty()) {
+            return null; 
+        }
+
+        String inputId = result.get().trim();
+        List<Student> allStudents = DataManager.loadStudents();
+        Student loggedInStudent = null;
+
+        for (Student s : allStudents) {
+            if (s.getId().equals(inputId)) {
+                loggedInStudent = s;
+                break;
+            }
+        }
+
+        if (loggedInStudent == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Login Failed");
+            alert.setHeaderText("Student ID Not Found!");
+            alert.setContentText("Please register your profile first using 'Register New Profile'.");
+            alert.showAndWait();
+            return null;
+        }
+
         BorderPane layout = new BorderPane();
         
-        // Sidebar
         VBox sidebar = new VBox(15);
         sidebar.setStyle(sidebarStyle);
         sidebar.setPrefWidth(240);
-        Label logo = new Label("Student Portal");
-        logo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 25 0;");
+        Label logo = new Label("Portal: " + loggedInStudent.getName());
+        logo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 25 0;");
         
         Button testBtn = new Button("Aptitude & Tech Practice");
         Button logoutBtn = new Button("Sign Out");
         testBtn.setStyle(sidebarBtnStyle); logoutBtn.setStyle(sidebarBtnStyle);
         sidebar.getChildren().addAll(logo, testBtn, logoutBtn);
 
-        // TOP BAR WITH PROFILE BUTTON
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
         topBar.setStyle("-fx-background-color: white; -fx-padding: 15 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0, 0, 2);");
@@ -240,7 +273,6 @@ public class MainApp extends Application {
         profileBtn.setStyle("-fx-background-color: #E2E8F0; -fx-text-fill: #1E293B; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 6; -fx-cursor: hand;");
         topBar.getChildren().add(profileBtn);
 
-        // MAIN QUIZ CONTENT
         VBox content = new VBox(20);
         content.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 30;");
         content.setAlignment(Pos.TOP_CENTER);
@@ -307,10 +339,11 @@ public class MainApp extends Application {
             optC.setOnAction(answerHandler); optD.setOnAction(answerHandler);
         });
 
-        // PROFILE BUTTON ACTION -> OPENS PROFILE MODAL/VIEW
+        // PROFILE MODAL FOR LOGGED IN STUDENT
+        final Student activeStudent = loggedInStudent;
         profileBtn.setOnAction(e -> {
             Stage profileStage = new Stage();
-            profileStage.setTitle("Student Profile Management");
+            profileStage.setTitle("Student Profile: " + activeStudent.getName());
             
             VBox pRoot = new VBox(15);
             pRoot.setStyle(cardStyle);
@@ -319,26 +352,28 @@ public class MainApp extends Application {
             Label pTitle = new Label("Student Academic Profile");
             pTitle.setStyle(headerStyle);
             
-            List<Student> students = DataManager.loadStudents();
-            Student currentStudent = students.isEmpty() ? new Student("101", "Demo Student", 8.5, "Java") : students.get(0);
+            TextField pId = new TextField(activeStudent.getId()); pId.setPromptText("ID");
+            TextField pName = new TextField(activeStudent.getName()); pName.setPromptText("Name");
+            TextField pCgpa = new TextField(String.valueOf(activeStudent.getCgpa())); pCgpa.setPromptText("CGPA");
+            TextField pSkills = new TextField(activeStudent.getSkills()); pSkills.setPromptText("Skills");
             
-            TextField pId = new TextField(currentStudent.getId()); pId.setPromptText("ID");
-            TextField pName = new TextField(currentStudent.getName()); pName.setPromptText("Name");
-            TextField pCgpa = new TextField(String.valueOf(currentStudent.getCgpa())); pCgpa.setPromptText("CGPA");
-            TextField pSkills = new TextField(currentStudent.getSkills()); pSkills.setPromptText("Skills");
-            
-            Button updateBtn = new Button("Update Details");
+            Button updateBtn = new Button("Update & Save Details");
             updateBtn.setStyle(btnStyle);
             Label pStatus = new Label();
             
             updateBtn.setOnAction(ex -> {
                 try {
-                    currentStudent.setId(pId.getText());
-                    currentStudent.setName(pName.getText());
-                    currentStudent.setCgpa(Double.parseDouble(pCgpa.getText()));
-                    currentStudent.setSkills(pSkills.getText());
+                    String oldId = activeStudent.getId();
+                    activeStudent.setId(pId.getText());
+                    activeStudent.setName(pName.getText());
+                    activeStudent.setCgpa(Double.parseDouble(pCgpa.getText()));
+                    activeStudent.setSkills(pSkills.getText());
+                    
+                    DataManager.deleteStudent(oldId);
+                    DataManager.saveStudent(activeStudent);
+                    
                     pStatus.setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
-                    pStatus.setText("Profile updated successfully!");
+                    pStatus.setText("Profile updated & saved to CSV!");
                 } catch(Exception err) {
                     pStatus.setStyle("-fx-text-fill: #DC2626;");
                     pStatus.setText("Invalid entry format.");
