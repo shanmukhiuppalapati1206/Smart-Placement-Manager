@@ -1,4 +1,15 @@
-Type,Question,A,B,C,D,CorrectAnswer
-Aptitude,What is the next number in the series: 2 4 8 16 ?,20,24,32,64,C
-Technical,Which of the following is NOT a Java keyword?,class,interface,extends,main,D
-Technical,What is the size of an int in Java?,16-bit,32-bit,64-bit,8-bit,B
+What is the time complexity of binary search in a sorted array?,O(1),O(n),O(log n),O(n log n),C
+Which data structure uses LIFO (Last In First Out) order?,Queue,Stack,Array,Tree,B
+Which of the following is not a core principle of OOPs?,Inheritance,Polymorphism,Compilation,Encapsulation,C
+What is the default value of a boolean variable in Java?,true,false,null,0,B
+Which memory area is automatically managed by Java for object allocation?,Stack,Heap,Permanent Generation,Metaspace,B
+What is the parent class of all classes in Java?,System,Object,Class,String,B
+Which collection class allows duplicate elements and maintains insertion order?,HashSet,TreeSet,ArrayList,HashMap,C
+What does SQL stand for?,Structured Query Language,Simple Query Logic,System Query Language,Sequential Query List,A
+Which protocol is primarily used to send emails securely in Java apps?,HTTP,SMTP,FTP,SSH,B
+What is the size of an int data type in Java?,16 bit,32 bit,64 bit,8 bit,B
+If a car travels 60 km in 1 hour 30 minutes, what is its average speed?,40 km/h,45 km/h,50 km/h,60 km/h,A
+What is 15% of 240?,32,36,40,48,B
+Find the next number in the series: 2, 6, 12, 20, 30, ?,40,42,46,50,B
+A man walks 5 km south, turns left and walks 3 km, then turns left again and walks 5 km. How far is he from the starting point?,3 km,5 km,8 km,10 km,A
+If '+' means '-', '-' means '*', '*' means '/', and '/' means '+', then value of 10 * 2 + 5 - 3 / 2 is?,15,18,20,22,B
