@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public class MainApp extends Application {
 
     private Stage window;
-    private Scene loginScene, studentScene, coordinatorScene;
+    private Scene loginScene, studentScene, coordinatorScene, registerScene;
 
     @Override
     public void start(Stage primaryStage) {
@@ -26,16 +27,19 @@ public class MainApp extends Application {
 
         Button studentLoginBtn = new Button("Student Login");
         Button coordinatorLoginBtn = new Button("Coordinator Login");
+        Button registerMenuBtn = new Button("Register New Student");
         
         studentLoginBtn.setMinWidth(200);
         coordinatorLoginBtn.setMinWidth(200);
+        registerMenuBtn.setMinWidth(200);
 
         studentLoginBtn.setOnAction(e -> window.setScene(studentScene));
         coordinatorLoginBtn.setOnAction(e -> window.setScene(coordinatorScene));
+        registerMenuBtn.setOnAction(e -> window.setScene(registerScene));
 
         VBox loginLayout = new VBox(20);
         loginLayout.setAlignment(Pos.CENTER);
-        loginLayout.getChildren().addAll(titleLabel, studentLoginBtn, coordinatorLoginBtn);
+        loginLayout.getChildren().addAll(titleLabel, studentLoginBtn, coordinatorLoginBtn, registerMenuBtn);
         loginScene = new Scene(loginLayout, 600, 500);
 
         // ==========================================
@@ -57,13 +61,12 @@ public class MainApp extends Application {
         
         VBox optionsBox = new VBox(10, optA, optB, optC, optD);
         optionsBox.setAlignment(Pos.CENTER);
-        optionsBox.setVisible(false); // Hide until test starts
+        optionsBox.setVisible(false); 
         
         Label resultLabel = new Label();
         resultLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: green;");
         Button backBtn1 = new Button("Back to Login");
 
-        // Arrays used to allow modification inside lambda expressions
         int[] currentQ = {0};
         int[] score = {0};
         
@@ -83,10 +86,9 @@ public class MainApp extends Application {
             startTimerThread(timerLabel);
             loadQuestionUI(qList, currentQ[0], questionLabel, optA, optB, optC, optD);
             
-            // Logic for answering questions
             javafx.event.EventHandler<javafx.event.ActionEvent> answerHandler = event -> {
                 Button clicked = (Button) event.getSource();
-                String selected = clicked.getText().substring(0, 1); // Gets "A", "B", "C", or "D"
+                String selected = clicked.getText().substring(0, 1); 
                 
                 if (selected.equals(qList.get(currentQ[0]).getCorrectOption())) {
                     score[0]++;
@@ -170,11 +172,56 @@ public class MainApp extends Application {
         coordLayout.getChildren().addAll(coordTitle, viewReportsBtn, reportOutput, backBtn2);
         coordinatorScene = new Scene(coordLayout, 600, 500);
 
+        // ==========================================
+        // --- SCREEN 4: STUDENT REGISTRATION ---
+        // ==========================================
+        Label regTitle = new Label("Register Student Profile");
+        regTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        
+        TextField idField = new TextField(); idField.setMaxWidth(250); idField.setPromptText("Student ID (e.g., 104)");
+        TextField nameField = new TextField(); nameField.setMaxWidth(250); nameField.setPromptText("Full Name");
+        TextField cgpaField = new TextField(); cgpaField.setMaxWidth(250); cgpaField.setPromptText("CGPA (e.g., 8.5)");
+        TextField skillsField = new TextField(); skillsField.setMaxWidth(250); skillsField.setPromptText("Skills (e.g., Java, Python)");
+        
+        Button submitRegBtn = new Button("Submit & Save Profile");
+        Button backFromRegBtn = new Button("Back to Login");
+        Label regStatus = new Label();
+        regStatus.setStyle("-fx-font-weight: bold;");
+
+        submitRegBtn.setOnAction(e -> {
+            try {
+                String id = idField.getText();
+                String name = nameField.getText();
+                double cgpa = Double.parseDouble(cgpaField.getText());
+                String skills = skillsField.getText();
+                
+                Student newStudent = new Student(id, name, cgpa, skills);
+                DataManager.saveStudent(newStudent); 
+                
+                regStatus.setStyle("-fx-text-fill: green;");
+                regStatus.setText("Successfully Registered! You can now login.");
+                idField.clear(); nameField.clear(); cgpaField.clear(); skillsField.clear();
+            } catch (Exception ex) {
+                regStatus.setStyle("-fx-text-fill: red;");
+                regStatus.setText("Error: Please enter valid details.");
+            }
+        });
+
+        backFromRegBtn.setOnAction(e -> {
+            regStatus.setText("");
+            window.setScene(loginScene);
+        });
+
+        VBox regLayout = new VBox(15);
+        regLayout.setAlignment(Pos.CENTER);
+        regLayout.getChildren().addAll(regTitle, idField, nameField, cgpaField, skillsField, submitRegBtn, regStatus, backFromRegBtn);
+        registerScene = new Scene(regLayout, 600, 500);
+
+        // Start Application
         window.setScene(loginScene);
         window.show();
     }
 
-    // Helper method to update the UI text for each question
     private void loadQuestionUI(List<Question> qList, int index, Label qLabel, Button a, Button b, Button c, Button d) {
         Question q = qList.get(index);
         qLabel.setText("Q" + (index + 1) + ". " + q.getQuestionText() + " [" + q.getType() + "]");
@@ -184,7 +231,6 @@ public class MainApp extends Application {
         d.setText("D) " + q.getOptD());
     }
 
-    // Multithreading Timer
     private void startTimerThread(Label timerLabel) {
         Thread timerThread = new Thread(() -> {
             try {
